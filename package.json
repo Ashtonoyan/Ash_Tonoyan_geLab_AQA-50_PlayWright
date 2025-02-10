@@ -1,0 +1,14 @@
+{
+  "name": "untitled4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "playwright": "^1.50.1",
+    "typescript": "^5.7.3"
+  },
+  "private": true
+}
