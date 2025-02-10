@@ -1,7 +1,24 @@
 import {test, expect, chromium, Page, Browser} from "playwright/test";
+import * as dotenv from "dotenv";
 
 let browser: Browser;
 let page: Page;
+dotenv.config();
+
+const baseUrl =  process.env.MAILFENCE_URL;
+const loginUrl = process.env.MAILFENCE_LOGIN_URL;
+const username = process.env.USER_EMAIL;
+const password = process.env.USER_PASSWORD;
+const mailText = process.env.MAIL_TEXT!
+
+if (!username || !password) {
+    throw new Error("❌ Environment variables not loaded! Check your .env file.");
+}
+
+if (!baseUrl || !loginUrl) {
+    throw new Error("❌ Environment variables not loaded! Check your .env file.");
+}
+
 
 test.beforeAll(async () => {
 
@@ -24,18 +41,21 @@ test.describe("MailFence Tests", () => {
 
         page = await browser.newPage();
 
-        await page.goto('https://mailfence.com/')
+
+        await page.goto(baseUrl)
         await page.click('#signin')
 
 
-        await page.waitForURL('https://mailfence.com/sw?type=L&state=0&lf=mailfence')
-        await page.fill('#UserID', "ashtonoyan@mailfence.com");
-        await page.fill('#Password', "123456789.Ash");
+        await page.waitForURL(loginUrl)
+
+        await page.fill('#UserID', username);
+        await page.fill('#Password', password);
         await page.click('input.btn[type="submit"]');
         await expect(page).toHaveURL("https://mailfence.com/flatx/index.jsp?v=2.8.028");
     })
 
     test("Send email", async () => {
+
         await page.goto('https://mailfence.com/flatx/index.jsp?v=2.8.028')
         await page.click('.icon24-Message.toolImg')
         await page.waitForTimeout(1000);
@@ -49,7 +69,7 @@ test.describe("MailFence Tests", () => {
             console.log("Is hidden");
         }
 
-        await page.fill('input.GCSDBRWBPL[type="text"]', 'ashtonoyan@mailfence.com')
+        await page.fill('input.GCSDBRWBPL[type="text"]', mailText)
         await page.waitForTimeout(5000);
 
         const iframeElement = await page.waitForSelector('iframe.editable');
@@ -87,6 +107,7 @@ test.describe("MailFence Tests", () => {
         await page.goto('https://mailfence.com/flatx/index.jsp?v=2.8.028')
         await page.waitForTimeout(10000);
         await page.click('#treeInbox')
+        await page.waitForTimeout(3000);
         const messages = await page.locator('div.listSubject:has-text("[Без темы]")');
         await messages.first().click();
         await page.waitForTimeout(3000);
