@@ -5,11 +5,16 @@ let browser: Browser;
 let page: Page;
 dotenv.config();
 
-const baseUrl =  process.env.MAILFENCE_URL;
+const baseUrl = process.env.MAILFENCE_URL;
 const loginUrl = process.env.MAILFENCE_LOGIN_URL;
 const username = process.env.USER_EMAIL;
 const password = process.env.USER_PASSWORD;
 const mailText = process.env.MAIL_TEXT!
+const filePath = process.env.TEST_FILE_PATH;
+
+if (!filePath) {
+    throw new Error("❌ TEST_FILE_PATH is not defined in .env file!");
+}
 
 if (!username || !password) {
     throw new Error("❌ Environment variables not loaded! Check your .env file.");
@@ -23,7 +28,7 @@ if (!baseUrl || !loginUrl) {
 test.beforeAll(async () => {
 
     browser = await chromium.launch({headless: false});
-    console.log("Start");
+    //console.log("Start");
 
 
 });
@@ -58,19 +63,19 @@ test.describe("MailFence Tests", () => {
 
         await page.goto('https://mailfence.com/flatx/index.jsp?v=2.8.028')
         await page.click('.icon24-Message.toolImg')
-        await page.waitForTimeout(1000);
+        //await page.waitForTimeout(1000);
         await page.waitForURL('https://mailfence.com/flatx/index.jsp?v=2.8.028#tool=mail&folderoid=639842178')
 
         const test = await page.waitForSelector('#mailNewBtn', {state: 'visible'});
         if (test) {
-            console.log("Is visible");
+            //console.log("Is visible");
             await page.click('#mailNewBtn');
         } else {
-            console.log("Is hidden");
+            //console.log("Is hidden");
         }
 
         await page.fill('input.GCSDBRWBPL[type="text"]', mailText)
-        await page.waitForTimeout(5000);
+        //await page.waitForTimeout(5000);
 
         const iframeElement = await page.waitForSelector('iframe.editable');
 
@@ -85,7 +90,7 @@ test.describe("MailFence Tests", () => {
 
         await page.click('a.GCSDBRWBISB.GCSDBRWBJSB')
 
-        await page.waitForTimeout(2000);
+        //await page.waitForTimeout(2000);
 
         const element = await page.locator('span.GCSDBRWBGR >> text="С вашего компьютера"');
         await element.scrollIntoViewIfNeeded();
@@ -93,44 +98,47 @@ test.describe("MailFence Tests", () => {
 
         const fileInput = await page.locator('input[type="file"]');
 
-        await fileInput.setInputFiles('C:/Users/atv00/Downloads/Mailfence e2e UI test case - TestRail (1) (2).pdf');
-        await page.waitForTimeout(1000);
+        await fileInput.setInputFiles(filePath);
+        //await page.waitForTimeout(1000);
+        await page.waitForSelector('.GCSDBRWBJRB')
 
         await page.click('#mailSend')
 
         await page.click('#dialBtn_YES')
+
+        await page.reload();
 
 
     })
 
     test("Processting Letters", async () => {
         await page.goto('https://mailfence.com/flatx/index.jsp?v=2.8.028')
-        await page.waitForTimeout(10000);
+        await page.reload();
         await page.click('#treeInbox')
-        await page.waitForTimeout(3000);
+        await page.reload();
         const messages = await page.locator('div.listSubject:has-text("[Без темы]")');
         await messages.first().click();
-        await page.waitForTimeout(3000);
         await page.click('a.GCSDBRWBJRB', {button: 'right'});
-        await page.waitForTimeout(1000);
+        //await page.waitForTimeout(1000);
         await page.click('span.GCSDBRWBGR >> text="Сохранить в документах"');
-        await page.waitForTimeout(1000);
+        //await page.waitForTimeout(1000);
         await page.click('div.treeItemLabel >> text="Мои документы"');
-        await page.waitForTimeout(1000);
+        //await page.waitForTimeout(1000);
         await page.click('#dialBtn_OK')
-        await page.waitForTimeout(1000);
+        //await page.waitForTimeout(1000);
     })
 
     test("Processting Documents", async () => {
         await page.goto('https://mailfence.com/flatx/index.jsp?v=2.8.028')
 
         await page.click('.icon24-Documents.toolImg')
-        await page.waitForTimeout(1000)
+
+        await page.waitForSelector(".GCSDBRWBPJB");
 
         await page.click('.GCSDBRWBPJB')
-        await page.waitForTimeout(1000)
+        //await page.waitForTimeout(1000)
 
-        await page.waitForTimeout(1000)
+        //await page.waitForTimeout(1000)
 
         await page.click('div.tbBtnText >> text="Переместить"');
 
@@ -139,23 +147,34 @@ test.describe("MailFence Tests", () => {
             el.style.display = 'block';
         });
 
-        await page.waitForTimeout(5000)
+
         await page.evaluate(() => {
             const overlay = document.querySelector('.GCSDBRWBED.GCSDBRWBO');
             if (overlay) {
-                overlay.remove();  // Remove the overlay from the DOM
+                overlay.remove();
             }
         });
 
         await page.locator('div.treeItemLabel:has-text("Trash")').nth(1).click();
 
 
-        await page.waitForTimeout(1000)
+        await page.locator('div.btnCtn div:has-text("Переместить")')
+            .waitFor({ state: 'visible' });
+        await page.locator('div.btnCtn div:has-text("Переместить")')
+            .waitFor({ state: 'attached' });
+
+
+        await expect(page.locator('div.btnCtn div:has-text("Переместить")')).toHaveCSS('cursor', 'pointer');
+
+
         await page.locator('div.btnCtn div:has-text("Переместить")').click();
+        //await page.locator('div.btnCtn div:has-text("Переместить")').click();
         await page.waitForTimeout(1000)
         await page.locator('div.btnCtn div:has-text("Да")').click();
 
         await page.locator('div.treeItemLabel:has-text("Trash")').first().click();
+
+        await expect(page).toHaveURL('https://mailfence.com/flatx/index.jsp?v=2.8.028#tool=docs&folderoid=575909539')
 
 
     })
