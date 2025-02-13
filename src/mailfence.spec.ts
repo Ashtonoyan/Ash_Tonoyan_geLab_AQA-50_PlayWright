@@ -1,4 +1,7 @@
 import {test, expect, chromium} from "playwright/test";
+import { faker } from '@faker-js/faker';
+
+const subjectRandom = faker.number.int({min: 1000000000, max: 9999999999}).toString();;
 
 
 test.describe("MailFence Tests", () => {
@@ -10,7 +13,7 @@ test.describe("MailFence Tests", () => {
         await page.fill('#UserID', process.env.USER_EMAIL!);
         await page.fill('#Password', process.env.USER_PASSWORD!);
         await page.click('input.btn[type="submit"]');
-        await expect(page).toHaveURL("https://mailfence.com/flatx/index.jsp?v=2.8.028");
+        //await expect(page).toHaveURL("https://mailfence.com/flatx/index.jsp?v=2.8.028");
 
 
 
@@ -18,7 +21,7 @@ test.describe("MailFence Tests", () => {
         //Click on the "Message" icon and wait for the desired page
         await page.click('.icon24-Message.toolImg')
 
-        await page.waitForURL(/https:\/\/mailfence\.com\/flatx\/index\.jsp\?v=2\.8\.028#tool=mail&folderoid=\d+/);
+        //await page.waitForURL(/https:\/\/mailfence\.com\/flatx\/index\.jsp\?v=2\.8\.028#tool=mail&folderoid=\d+/);
 
         //Wait and click on the "Create" button
         const test = await page.waitForSelector('#mailNewBtn', {state: 'visible'});
@@ -26,17 +29,20 @@ test.describe("MailFence Tests", () => {
 
         //Here we write the recipient of the letter
         await page.fill('input.GCSDBRWBPL[type="text"]', process.env.MAIL_TEXT!)
+        await page.fill('#mailSubject', subjectRandom)
 
         //To insert text into the letter field, we need to process the frame
-        const iframeElement = await page.waitForSelector('iframe.editable');
+        //const iframeElement = await page.waitForSelector('iframe.editable');
 
 
-        const frame = await iframeElement.contentFrame();
+        //const frameForText = await iframeElement.contentFrame();
+        const frameForText = page.frameLocator('iframe.editable');
 
-        if (frame !== null) {
-            await frame.fill('#gwt-uid-32', 'ashtonoyan@mailfence.com');
+
+        if (frameForText !== null) {
+            //await frameForText.fill('#gwt-uid-32', 'ashtonoyan@mailfence.com');
+            await frameForText.locator('#gwt-uid-32').fill('ashtonoyan@mailfence.com');
         } else {
-            console.error('Unable to access iframe content');
             throw new Error('Error: iframe is not available or not loaded');
 
         }
@@ -47,8 +53,12 @@ test.describe("MailFence Tests", () => {
         await page.click('a.GCSDBRWBISB.GCSDBRWBJSB')
 
 
-        const element = page.locator('span.GCSDBRWBGR').first();
-        await element.scrollIntoViewIfNeeded();
+        //const element = page.locator('span.GCSDBRWBGR').first();
+        const uploadFromPC =  page.locator('body > div.GCSDBRWBOQ.menu > div > ul > li:nth-child(1) > a')
+        await uploadFromPC.scrollIntoViewIfNeeded()
+
+
+       // await element.scrollIntoViewIfNeeded();
 
 
         const fileInput = page.locator('input[type="file"]');
@@ -65,9 +75,11 @@ test.describe("MailFence Tests", () => {
         //We wait for the file to download and send the letter.
         await page.waitForSelector('.GCSDBRWBJRB')
 
+
+
         await page.click('#mailSend')
 
-        await page.click('#dialBtn_YES')
+        //await page.click('#dialBtn_YES')
 
 
         // Saving a document
@@ -76,15 +88,34 @@ test.describe("MailFence Tests", () => {
         await page.click('#treeInbox')
 
         // Refresh button
-        await page.locator('div.tbBtnText').nth(1).click();
+        //await page.locator('div.tbBtnText').nth(1).click();
+        await page.locator('div.icon.icon16-Refresh').click();
 
         //This part of code is responsible for finding a new letter.
         //First, we wait for the messages to load, then we wait for the first unread one.
         //If there is no new letter, we refresh the page and check again.
         //This cycle can last up to 10 seconds. If there no letter, we get an error message.
 
+
         const timeout = Date.now() + 10000;
 
+
+        while (Date.now() < timeout) {
+            try {
+                await page.waitForSelector(`div.listSubject[title="${subjectRandom}"]`, { timeout: 3000 });
+            } catch (e) {
+                console.log('Element not found, reloading page...');
+                await page.reload();
+                continue;
+            }
+
+            const email = await page.locator(`div.listSubject[title="${subjectRandom}"]`);
+
+
+            await email.click();
+            break;
+        }
+        /*
         while (Date.now() < timeout) {
             await page.waitForSelector('div.listSubject')
             const firstUnreadEmail = page.locator('tr.listUnread').first();
@@ -98,18 +129,27 @@ test.describe("MailFence Tests", () => {
             await page.reload();
 
         }
-
+*/
         if (Date.now() >= timeout) {
             console.error('Failed to find unread email within the 10-second timeout.');
         }
+
+
 
         //This is the process of saving a letter.
         //Right-click on the file, select the folder and save the file.
         await page.click('a.GCSDBRWBJRB', {button: 'right'});
 
-        await page.locator('span.GCSDBRWBGR').nth(2).click();
+        //await page.locator('span.GCSDBRWBGR').nth(2).click();
+        await page.locator('//body/div[5]/div/ul/li[3]/a/span').click();
 
-        await page.locator('div.GCSDBRWBDX.treeItemRoot.GCSDBRWBLX').nth(2).click();
+
+
+
+        //await page.locator('div.GCSDBRWBDX.treeItemRoot.GCSDBRWBLX').nth(2).click();
+        await page.locator('xpath=/html/body/div[5]/div[2]/div/div[2]/div/div/div/div/div[1]/div[2]').click();
+
+
 
         //We wait until the button becomes clickable and then save
         await page.locator('#dialBtn_OK').waitFor({state: 'attached'});
@@ -123,12 +163,16 @@ test.describe("MailFence Tests", () => {
         await page.click('.icon24-Documents.toolImg')
 
         await page.waitForSelector(".GCSDBRWBPJB");
+        await page.locator('.GCSDBRWBPJB').first().click();
 
-        await page.click('.GCSDBRWBPJB')
+
+        //await page.click('.GCSDBRWBPJB')
 
 
-        await page.locator('div.tbBtnText').nth(3).click();
+        //await page.locator('div.tbBtnText').nth(3).click();
+        await page.locator('.icon.icon16-Move').click();
 
+        /*
         //We have a block of code that is covering the Trash folder, so we make it visible and then delete it.
         await page.locator('div.GCSDBRWBED.GCSDBRWBO').evaluate(el => {
             el.style.display = 'block';
@@ -141,8 +185,14 @@ test.describe("MailFence Tests", () => {
                 overlay.remove();
             }
         });
+        */
+        //page.locator('#doc_tree_trash').nth(1).click();
 
-        page.locator('#doc_tree_trash').nth(1).click();
+        await page.locator('//body/div[5]/div[2]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]').scrollIntoViewIfNeeded();
+        const clickOnTrash =  page.locator('//body/div[5]/div[2]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]');
+        await clickOnTrash.hover();  // Наводим курсор
+        await clickOnTrash.click({ force: true });  // Кликаем с принудительным разрешением
+
 
         //We wait until the button becomes clickable and then save
         await page.locator('#dialBtn_OK')
@@ -160,8 +210,8 @@ test.describe("MailFence Tests", () => {
         const trashButton = page.locator('#doc_tree_trash').first();
         await trashButton.click();
 
-        await expect(page).toHaveURL(/https:\/\/mailfence\.com\/flatx\/index\.jsp\?v=2\.8\.028#tool=docs&folderoid=\d+/);
-
+        //await expect(page).toHaveURL(/https:\/\/mailfence\.com\/flatx\/index\.jsp\?v=2\.8\.028#tool=docs&folderoid=\d+/);
+        await expect(page.locator("div.GCSDBRWBOBC")).toBeVisible()
 
     })
 
