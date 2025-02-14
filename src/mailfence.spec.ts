@@ -105,6 +105,7 @@ test.describe("MailFence Tests", () => {
         await page.click('a.GCSDBRWBJRB', {button: 'right'});
 
         //await page.locator('span.GCSDBRWBGR').nth(2).click();
+        //There was no point in changing it, it was the third item from the list with the same names
         await page.locator('//body/div[5]/div/ul/li[3]/a/span').click();
 
         const myDocumentFolder = page.locator('div[hidefocus="true"] div.treeItemLabel:not(#doc_tree_trash)');
@@ -124,8 +125,6 @@ test.describe("MailFence Tests", () => {
 
         await page.locator('.icon.icon16-Move').click();
 
-        //await page.locator('//body/div[5]/div[2]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]').scrollIntoViewIfNeeded();
-        // clickOnTrash = page.locator('//body/div[5]/div[2]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]');
         await page.locator('div[hidefocus="true"] div#doc_tree_trash:not(#treeItemLabel)').scrollIntoViewIfNeeded();
         const clickOnTrash = page.locator('div[hidefocus="true"] div#doc_tree_trash:not(#treeItemLabel)');
         await clickOnTrash.click();
