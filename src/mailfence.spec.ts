@@ -1,7 +1,9 @@
 import {test, expect, chromium} from "playwright/test";
 import {faker} from '@faker-js/faker';
 
-const subjectRandom = faker.number.int({min: 1000000000, max: 9999999999}).toString();
+const fs = require('fs');
+
+const subjectRandom = "AT_C2256_" + faker.string.alphanumeric(10).toUpperCase();
 
 
 test.describe("MailFence Tests", () => {
@@ -54,7 +56,7 @@ test.describe("MailFence Tests", () => {
 
         const testFilePath = process.env.TEST_FILE_PATH!;
 
-        const fs = require('fs');
+
         if (!fs.existsSync(testFilePath)) {
             throw new Error(`File not found: ${testFilePath}`);
         }
@@ -78,32 +80,23 @@ test.describe("MailFence Tests", () => {
         await page.locator('div.icon.icon16-Refresh').click();
 
         //This part of code is responsible for finding a new letter.
-        //First, we wait for the messages to load, then we wait for the first unread one.
-        //If there is no new letter, we refresh the page and check again.
-        //This cycle can last up to 10 seconds. If there no letter, we get an error message.
+        let counter = 0;
 
-
-        const timeout = Date.now() + 10000;
-
-
-        while (Date.now() < timeout) {
+        while (counter < 10) {
             try {
-                await page.waitForSelector(`div.listSubject[title="${subjectRandom}"]`, {timeout: 3000});
+                await page.waitForSelector(`div.listSubject[title="${subjectRandom}"]`, {timeout: 1000});
+                const email = await page.locator(`div.listSubject[title="${subjectRandom}"]`);
+                await email.click();
+                break;
             } catch (e) {
+                counter++;
                 console.log('Element not found, reloading page...');
                 await page.reload();
-                continue;
             }
 
-            const email = await page.locator(`div.listSubject[title="${subjectRandom}"]`);
-
-
-            await email.click();
-            break;
         }
-
-        if (Date.now() >= timeout) {
-            console.error('Failed to find unread email within the 10-second timeout.');
+        if (counter === 10) {
+            throw new Error('Email not found after 10 attempts.');
         }
 
 
@@ -114,18 +107,14 @@ test.describe("MailFence Tests", () => {
         //await page.locator('span.GCSDBRWBGR').nth(2).click();
         await page.locator('//body/div[5]/div/ul/li[3]/a/span').click();
 
-
-        //await page.locator('div.GCSDBRWBDX.treeItemRoot.GCSDBRWBLX').nth(2).click();
-        await page.locator('xpath=/html/body/div[5]/div[2]/div/div[2]/div/div/div/div/div[1]/div[2]').click();
-
+        const myDocumentFolder = page.locator('div[hidefocus="true"] div.treeItemLabel:not(#doc_tree_trash)');
+        await myDocumentFolder.click();
 
         //We wait until the button becomes clickable and then save
         await page.locator('#dialBtn_OK').waitFor({state: 'attached'});
         await expect(page.locator('#dialBtn_OK')).toHaveCSS('cursor', 'pointer');
 
-
         await page.click('#dialBtn_OK')
-
         //Processing a document
         //Select the file and click on "Move"
         await page.click('.icon24-Documents.toolImg')
@@ -133,20 +122,19 @@ test.describe("MailFence Tests", () => {
         await page.waitForSelector(".GCSDBRWBPJB");
         await page.locator('.GCSDBRWBPJB').first().click();
 
-
         await page.locator('.icon.icon16-Move').click();
 
-
-        await page.locator('//body/div[5]/div[2]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]').scrollIntoViewIfNeeded();
-        const clickOnTrash = page.locator('//body/div[5]/div[2]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]');
+        //await page.locator('//body/div[5]/div[2]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]').scrollIntoViewIfNeeded();
+        // clickOnTrash = page.locator('//body/div[5]/div[2]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]');
+        await page.locator('div[hidefocus="true"] div#doc_tree_trash:not(#treeItemLabel)').scrollIntoViewIfNeeded();
+        const clickOnTrash = page.locator('div[hidefocus="true"] div#doc_tree_trash:not(#treeItemLabel)');
+        await clickOnTrash.click();
         await clickOnTrash.hover();  // Hover the cursor
         await clickOnTrash.click({force: true});
-
 
         //We wait until the button becomes clickable and then save
         await page.locator('#dialBtn_OK')
             .waitFor({state: 'attached'});
-
 
         await expect(page.locator('#dialBtn_OK')).toHaveCSS('cursor', 'pointer');
 
