@@ -1,10 +1,10 @@
 import {test, expect, chromium} from "playwright/test";
 import {faker} from '@faker-js/faker';
-import {Button} from "../ui-wrappers/button";
-import {InputField} from "../ui-wrappers/inputField";
-import {FrameClass} from "../ui-wrappers/frame";
-import {UploadFile} from "../ui-wrappers/uploadile";
-import {EmailFind} from "../ui-wrappers/emailFind";
+import {ButtonsWrapper} from "../ui-wrappers/buttons-wrapper";
+import {InputFieldWrapper} from "../ui-wrappers/input-field-wrapper";
+import {FrameClass} from "../ui-wrappers/frame-wrapper";
+import {UploadFile} from "../ui-wrappers/upload-file-wrapper";
+import {EmailFindWrapper} from "../ui-wrappers/email-find-wrapper";
 
 
 const subjectRandom = "AT_C2256_" + faker.string.alphanumeric(10).toUpperCase();
@@ -16,9 +16,9 @@ test.describe("MailFence Tests", () => {
 
         await page.goto(process.env.MAILFENCE_LOGIN_URL!)
         // Authorization process
-        const inputEmail = new InputField(page, '#UserID')
+        const inputEmail = new InputFieldWrapper(page, 'Email Field', '#UserID')
         await inputEmail.fillInputField(process.env.USER_EMAIL!)
-        const inputPassword = new InputField(page, '#Password')
+        const inputPassword = new InputFieldWrapper(page, 'Password Field', '#Password')
         await inputPassword.fillInputField(process.env.USER_PASSWORD!)
         await page.click('input.btn[type="submit"]');
 
@@ -33,14 +33,14 @@ test.describe("MailFence Tests", () => {
         await page.click('#mailNewBtn');
 
         //Here we write the recipient of the letter
-        const mailText = new InputField(page, 'input[tabindex="1"]')
+        const mailText = new InputFieldWrapper(page, 'Mail text field', 'input[tabindex="1"]')
         await mailText.fillInputField(process.env.MAIL_TEXT!)
-        const mailSubject = new InputField(page, '#mailSubject')
+        const mailSubject = new InputFieldWrapper(page, 'Subject field', '#mailSubject')
         await mailSubject.fillInputField(subjectRandom)
 
         //To insert text into the letter field, we need to process the frame
 
-        const frameElement = new FrameClass(page, 'iframe.editable')
+        const frameElement = new FrameClass(page, 'Frame element for mail text', 'iframe.editable')
         await frameElement.fillFrame('#gwt-uid-32', 'ashtonoyan@mailfence.com')
 
 
@@ -53,7 +53,7 @@ test.describe("MailFence Tests", () => {
         const uploadFromPC = page.locator('body > div.GCSDBRWBOQ.menu > div > ul > li:nth-child(1) > a')
         await uploadFromPC.scrollIntoViewIfNeeded()
 
-        const fileInput = new UploadFile(page, 'input[type="file"]')
+        const fileInput = new UploadFile(page, 'Field for file', 'input[type="file"]')
 
         const testFilePath = process.env.TEST_FILE_PATH!;
         fileInput.uploadFile(testFilePath);
@@ -72,12 +72,12 @@ test.describe("MailFence Tests", () => {
         await page.click('#treeInbox')
 
         // Refresh button
-        const buttonRefresh = new Button(page, 'div.icon.icon16-Refresh')
+        const buttonRefresh = new ButtonsWrapper(page, "ButtonRefresh" , 'div.icon.icon16-Refresh')
 
         await buttonRefresh.click()
 
         //This part of code is responsible for finding a new letter.
-        const emailFind = new EmailFind(page)
+        const emailFind = new EmailFindWrapper(page, 'Search for sent letter')
         await emailFind.find(subjectRandom)
 
 
@@ -92,7 +92,7 @@ test.describe("MailFence Tests", () => {
         await myDocumentFolder.click();
 
         //We wait until the button becomes clickable and then save
-        const buttonOk = new Button(page, '#dialBtn_OK')
+        const buttonOk = new ButtonsWrapper(page, 'buttonOk', '#dialBtn_OK')
         await buttonOk.toAttached()
         await buttonOk.toHaveCSS()
         await buttonOk.click()
