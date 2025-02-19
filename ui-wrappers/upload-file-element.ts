@@ -1,15 +1,13 @@
 import {Page, Locator} from "@playwright/test";
 import {test} from "playwright/test";
+import {BaseElement} from "./base-element";
 
 const fs = require('fs');
 
-export class UploadFile {
-    private file: Locator;
-    private name: string;
+export class UploadFile extends BaseElement {
+    constructor(page: Page, selector: string, name?: string,) {
+        super(page, selector, name);
 
-    constructor(page: Page, name: string, selector: string) {
-        this.file = page.locator(selector);
-        this.name = name;
     }
 
     async uploadFile(filePath: string) {
@@ -17,7 +15,7 @@ export class UploadFile {
             if (!fs.existsSync(filePath)) {
                 throw new Error(`File not found: ${filePath}`);
             }
-            await this.file.setInputFiles(filePath);
+            await this.locator.setInputFiles(filePath);
         })
 
     }

@@ -1,21 +1,22 @@
 import {Page, Locator} from "@playwright/test";
-import {ButtonsWrapper} from "./buttons-wrapper";
+import {ButtonElement} from "./buttons-element";
 import {test} from "playwright/test";
 
 
-export class EmailFindWrapper {
+export class EmailFind {
     private page: Page;
-    private name: string;
+    private name?: string;
 
-    constructor(page: Page, name: string) {
+
+    constructor(page: Page, name?: string) {
         this.page = page;
         this.name = name;
     }
 
     async find(subjectRandom: string) {
+
         await test.step(`Find our email in ${this.name}`, async () => {
             let counter = 0;
-            const buttonRefresh = new ButtonsWrapper(this.page, 'Refresh button for Email find', 'div.icon.icon16-Refresh')
 
             while (counter < 10) {
                 try {
@@ -26,7 +27,7 @@ export class EmailFindWrapper {
                 } catch (e) {
                     counter++;
                     console.log('Element not found, reloading page...');
-                    await buttonRefresh.click()
+                    await new ButtonElement(this.page, 'div.icon.icon16-Refresh').click();
                 }
 
             }
