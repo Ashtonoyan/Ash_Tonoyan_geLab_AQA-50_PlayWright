@@ -1,10 +1,9 @@
-import {test, expect, chromium} from "playwright/test";
+import {test } from "playwright/test";
 import {faker} from '@faker-js/faker';
 import {ButtonElement} from "../ui-wrappers/buttons-element";
 import {InputField} from "../ui-wrappers/input-field-element";
 import {Frame} from "../ui-wrappers/frame-element";
 import {UploadFile} from "../ui-wrappers/upload-file-element";
-import {EmailFind} from "../ui-wrappers/email-find-element";
 import {BaseElement} from "../ui-wrappers/base-element";
 
 
@@ -38,18 +37,17 @@ test.describe("MailFence Tests", () => {
         await mailSubject.fillInputField(subjectRandom)
 
         //To insert text into the letter field, we need to process the frame
+        const frameElement = new Frame(page, page.frameLocator('iframe.editable'));
+        await frameElement.fill('body.editable[role="textbox"]', 'ashtonoyan@mailfence.com')
 
-        const frameElement = new Frame(page, 'iframe.editable');
-        await frameElement.fillFrame('body.editable[role="textbox"]', 'ashtonoyan@mailfence.com')
-
-        await new ButtonElement(page, 'a.GCSDBRWBISB.GCSDBRWBJSB').locator.first().click();
+        await new ButtonElement(page, 'a.GCSDBRWBISB.GCSDBRWBJSB').first().click();
 
         await new ButtonElement(page, 'div.GCSDBRWBOQ.menu > div > ul > li:nth-child(1) > a').scroolViewIfNeeded()
 
         const fileInput = new UploadFile(page, 'input[type="file"]')
 
         const testFilePath = process.env.TEST_FILE_PATH!;
-        fileInput.uploadFile(testFilePath);
+        await fileInput.uploadFile(testFilePath);
 
 
         //We wait for the file to download and send the letter.
@@ -62,8 +60,27 @@ test.describe("MailFence Tests", () => {
         const buttonRefresh = new ButtonElement(page, 'div.icon.icon16-Refresh', "ButtonRefresh")
         await buttonRefresh.click()
         //This part of code is responsible for finding a new letter.
-        const emailFind = new EmailFind(page, 'Search for sent letter')
-        await emailFind.find(subjectRandom)
+
+        let counter = 0;
+
+        while (counter < 10) {
+            try {
+                await new ButtonElement(page, `div.listSubject[title="${subjectRandom}"]`).
+                waitForSelector({ timeout: 1000 })
+                const email =  new ButtonElement(page, `div.listSubject[title="${subjectRandom}"]`)
+                await email.click()
+                break;
+            } catch (e) {
+                counter++;
+                console.log('Element not found, reloading page...');
+                await buttonRefresh.click();
+            }
+
+        }
+        if (counter === 10) {
+            throw new Error('Email not found after 10 attempts.');
+        }
+
         //This is the process of saving a letter.
         //Right-click on the file, select the folder and save the file.
         await new ButtonElement(page, 'a.GCSDBRWBJRB').click({button: 'right'});
@@ -82,12 +99,12 @@ test.describe("MailFence Tests", () => {
         //Processing a document
         //Select the file and click on "Move"
         await new ButtonElement(page, '.icon24-Documents.toolImg').click()
-        await new ButtonElement(page, '.GCSDBRWBPJB').locator.first().click();
+        await new ButtonElement(page, '.GCSDBRWBPJB').first().click();
         await buttonRefresh.click();
 
         await new ButtonElement(page, '.icon.icon16-Move').click()
         await new ButtonElement(page, 'div[hidefocus="true"] div#doc_tree_trash:not(#treeItemLabel)').scroolViewIfNeeded()
-        const clickOnTrash = page.locator('div[hidefocus="true"] div#doc_tree_trash:not(#treeItemLabel)');
+        const clickOnTrash = new ButtonElement(page, 'div[hidefocus="true"] div#doc_tree_trash:not(#treeItemLabel)');
         await clickOnTrash.click();
         await clickOnTrash.hover();
         await clickOnTrash.click({force: true});
@@ -100,8 +117,8 @@ test.describe("MailFence Tests", () => {
         await new ButtonElement(page, '#dialBtn_YES').click();
 
         //Go to the Trash page.
-        await new ButtonElement(page, '#doc_tree_trash').locator.first().click();
-        await expect(page.locator("div.GCSDBRWBOBC")).toBeVisible()
+        await new ButtonElement(page, '#doc_tree_trash').first().click();
+        await new ButtonElement(page, 'div.GCSDBRWBOBC').toBeVisible()
     })
 
 
