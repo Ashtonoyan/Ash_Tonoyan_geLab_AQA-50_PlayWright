@@ -7,8 +7,12 @@ export class BaseElement {
     name: string | undefined;
 
 
-    constructor(pageOrLocator: Page | Locator, selector?: string, name?: string) {
-        if (selector) {
+    constructor(locator: Locator, name?: string) {
+
+        this.locator = locator;
+        this.name = name;
+    }
+       /* if (selector) {
             this.locator = (pageOrLocator as Page).locator(selector);
         } else {
             this.locator = pageOrLocator as Locator;
@@ -16,13 +20,15 @@ export class BaseElement {
         this.name = name;
     }
 
+        */
+
     async click(options?: Parameters<Locator["click"]>[0]) {
         await test.step(`Click ${this.name}`, async () => {
             await this.locator.click(options);
         });
     }
     first(): BaseElement {
-        return new BaseElement(this.locator.first(), '', `${this.name} (first)`);
+        return new BaseElement(this.locator.first(),` ${this.name} (first)`);
     }
 
     async toAttached() {

@@ -1,12 +1,12 @@
-import {Page} from "@playwright/test";
+import {Locator} from "@playwright/test";
 import {test} from "playwright/test";
 import {BaseElement} from "./base-element";
 
 const fs = require('fs');
 
 export class UploadFile extends BaseElement {
-    constructor(page: Page, selector: string, name?: string,) {
-        super(page, selector, name);
+    constructor(locator: Locator, name?: string,) {
+        super(locator, name);
 
     }
 

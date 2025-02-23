@@ -5,8 +5,8 @@ import {BaseElement} from "./base-element";
 export class Frame extends BaseElement {
     private frameLocator: FrameLocator;
 
-    constructor(page: Page, frameLocator: FrameLocator, name?: string,) {
-        super(page, '', name);
+    constructor(frameLocator: FrameLocator, name?: string,) {
+        super(frameLocator.locator(''), name);
         this.frameLocator = frameLocator;
     }
 
