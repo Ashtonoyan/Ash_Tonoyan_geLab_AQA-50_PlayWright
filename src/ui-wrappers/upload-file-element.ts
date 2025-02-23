@@ -7,7 +7,6 @@ const fs = require('fs');
 export class UploadFile extends BaseElement {
     constructor(locator: Locator, name?: string,) {
         super(locator, name);
-
     }
 
     async uploadFile(filePath: string) {

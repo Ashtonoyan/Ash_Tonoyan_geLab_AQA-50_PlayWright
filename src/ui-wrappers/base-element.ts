@@ -12,23 +12,25 @@ export class BaseElement {
         this.locator = locator;
         this.name = name;
     }
-       /* if (selector) {
-            this.locator = (pageOrLocator as Page).locator(selector);
-        } else {
-            this.locator = pageOrLocator as Locator;
-        }
-        this.name = name;
-    }
 
-        */
+    /* if (selector) {
+         this.locator = (pageOrLocator as Page).locator(selector);
+     } else {
+         this.locator = pageOrLocator as Locator;
+     }
+     this.name = name;
+ }
+
+     */
 
     async click(options?: Parameters<Locator["click"]>[0]) {
         await test.step(`Click ${this.name}`, async () => {
             await this.locator.click(options);
         });
     }
+
     first(): BaseElement {
-        return new BaseElement(this.locator.first(),` ${this.name} (first)`);
+        return new BaseElement(this.locator.first(), ` ${this.name} (first)`);
     }
 
     async toAttached() {
@@ -49,6 +51,7 @@ export class BaseElement {
             await this.locator.waitFor();
         });
     }
+
     async waitForSelector(options: { timeout?: number } = {}) {
         await test.step(`Wait for ${this.name} to appear`, async () => {
             // Using the provided selector and options (timeout)

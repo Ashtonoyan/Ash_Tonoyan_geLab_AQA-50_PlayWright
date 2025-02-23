@@ -21,7 +21,7 @@ export class ButtonElement extends BaseElement {
         })
     }
 
-    async hover(){
+    async hover() {
         await test.step(`To hover ${this.name}`, async () => {
             await this.locator.hover()
         })
