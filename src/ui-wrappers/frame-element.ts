@@ -1,4 +1,4 @@
-import {Page, FrameLocator} from "@playwright/test";
+import {Page, FrameLocator, Locator} from "@playwright/test";
 import {test} from "@playwright/test";
 import {BaseElement} from "./base-element";
 
@@ -9,10 +9,12 @@ export class Frame extends BaseElement {
         super(frameLocator.locator(''), name);
         this.frameLocator = frameLocator;
     }
+    findLocator(selector: string): Locator {
+        return this.frameLocator.locator(selector);
+    }
 
-    async fill(fieldSelector: string, data: string) {
+    async fill(fieldLocator: Locator, data: string) {
         await test.step(`Fill ${this.name} with data`, async () => {
-            const fieldLocator = this.frameLocator.locator(fieldSelector);
             await fieldLocator.fill(data);
         });
     }

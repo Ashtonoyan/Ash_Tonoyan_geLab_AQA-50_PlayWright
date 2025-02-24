@@ -3,7 +3,7 @@ import {ButtonElement} from "../ui-wrappers/buttons-element";
 import {BaseComponent} from "./base-components";
 
 
-export class MailMenuComponent extends BaseComponent {
+export class MailGeneralComponent extends BaseComponent {
     private createMail: ButtonElement;
     private refresh: ButtonElement;
     private inboxMail: ButtonElement;
@@ -14,7 +14,7 @@ export class MailMenuComponent extends BaseComponent {
         this.createMail = new ButtonElement(page.locator('#mailNewBtn'), 'Mail Create Button')
         this.refresh = new ButtonElement(page.locator('div.icon.icon16-Refresh'), 'Refresh Button')
         this.inboxMail = new ButtonElement(page.locator('#treeInbox'), 'Inbox Mail Create Button')
-        this.trash = new ButtonElement(page.locator('#doc_tree_trash'), 'Trash Button')
+        this.trash = new ButtonElement(page.locator('#doc_tree_trash').first(), 'Trash Button')
     }
 
     async gotoCreateMail(): Promise<void> {
@@ -30,6 +30,6 @@ export class MailMenuComponent extends BaseComponent {
     }
 
     async goToTrash(): Promise<void> {
-        await this.trash.first().click()
+        await this.trash.click()
     }
 }

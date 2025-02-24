@@ -10,7 +10,7 @@ export default defineConfig({
     use: {
         headless: false,
         viewport: { width: 1280, height: 720 },
-        baseURL: process.env.MAILFENCE_LOGIN_URL!,
+        //baseURL: process.env.MAILFENCE_LOGIN_URL!,
         actionTimeout: 10_1000,
         trace: 'on',
         video: 'off',

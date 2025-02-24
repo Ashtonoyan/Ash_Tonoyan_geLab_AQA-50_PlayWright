@@ -7,7 +7,7 @@ export class InputField extends BaseElement {
         super(locator, name);
     }
 
-    async fillInputField(data: string) {
+    async fill(data: string) {
         await test.step(`Fill ${this.name} field`, async () => {
             await this.locator.fill(data)
         })

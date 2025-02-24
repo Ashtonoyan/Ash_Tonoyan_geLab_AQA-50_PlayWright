@@ -29,9 +29,7 @@ export class BaseElement {
         });
     }
 
-    first(): BaseElement {
-        return new BaseElement(this.locator.first(), ` ${this.name} (first)`);
-    }
+
 
     async toAttached() {
         await test.step(`To be Attached ${this.name}`, async () => {

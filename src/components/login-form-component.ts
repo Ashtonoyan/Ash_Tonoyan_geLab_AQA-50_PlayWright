@@ -16,8 +16,8 @@ export class LoginForm extends BaseComponent {
     }
 
     async login(email: string, password: string): Promise<void> {
-        await this.emailInput.fillInputField(email)
-        await this.passwordInput.fillInputField(password)
+        await this.emailInput.fill(email)
+        await this.passwordInput.fill(password)
         await this.loginButton.click()
     }
 }

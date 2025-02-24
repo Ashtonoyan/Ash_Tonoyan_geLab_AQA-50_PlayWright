@@ -26,6 +26,7 @@ export class ModalComponent extends BaseComponent {
     }
 
     async trashButtonClick(): Promise<void> {
+        await this.clickOnTrash.scroolViewIfNeeded()
         await this.clickOnTrash.click();
         await this.clickOnTrash.hover();
         await this.clickOnTrash.click({force: true});
