@@ -38,7 +38,7 @@ export class MailCreate extends BasePage {
         await this.mailText1.createMessage(mailtext, subject, file)
     }
 
-    async documentProcess(): Promise<void> {
+    async documentSave(): Promise<void> {
         await this.navigateSibar.moveToInbox()
         await this.topBar.refresh()
 

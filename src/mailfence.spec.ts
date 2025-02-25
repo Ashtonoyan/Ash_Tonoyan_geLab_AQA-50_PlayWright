@@ -19,10 +19,9 @@ test.describe("MailFence Tests", () => {
         const sendMail = new MailCreate(page, subjectRandom)
         await sendMail.createMail(process.env.MAIL_TEXT!, subjectRandom, process.env.TEST_FILE_PATH!)
         await page.reload();
-        await sendMail.documentProcess()
+        await sendMail.documentSave()
         const processDocument = new DocumentProcessing(page)
         await processDocument.documentProcess()
-
 
     })
 
