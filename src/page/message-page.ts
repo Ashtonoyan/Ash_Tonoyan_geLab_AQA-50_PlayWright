@@ -32,7 +32,7 @@ export class MailCreate extends BasePage {
         await this.navigateHeaderButtons.messageIcon.click()
     }
 
-    async createSendMail(mailtext: string, subject: string, file: string): Promise<void> {
+    async createFillSendMail(mailtext: string, subject: string, file: string): Promise<void> {
         await this.messageActionsBar.newMail.click()
         await this.newMailForm.fillMessage(mailtext, subject, file)
         await this.newMailForm.sendButton.click()
