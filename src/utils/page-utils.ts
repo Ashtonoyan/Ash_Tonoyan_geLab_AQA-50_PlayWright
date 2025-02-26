@@ -11,5 +11,5 @@ export const getPage = (): Page => {
     if (!pageInstance) {
         throw new Error('Page instance is not set. Ensure the fixture is properly initialized.');
     }
-    return pageInstance;  // TypeScript will now know that pageInstance is non-null
+    return pageInstance;
 };

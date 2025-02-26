@@ -7,32 +7,37 @@ import {DocumentNavigationHeader} from "../components/document-navigation-header
 import {DocumentActionTopBar} from "../components/document-action-topbar-component";
 import {DocumentList} from "../components/document-list-component";
 
-export class DocumentProcessing extends BasePage {
-    private documentFolderButton: DocumentNavigationHeader;
-    private documentChooseButton: DocumentList;
-    private documentAction1: DocumentActionTopBar
+export class DocumentPage extends BasePage {
+    private documentNavigationHeader: DocumentNavigationHeader;
+    private documentList: DocumentList;
+    private documentAction: DocumentActionTopBar
     private documentDialog: DocumentDialog
-    private trashFolder: DocumentSidebar
+    private documentSidebar: DocumentSidebar
 
     constructor(page: Page) {
         super(page);
-        this.documentFolderButton = new DocumentNavigationHeader(page);
-        this.documentChooseButton = new DocumentList(page)
-        this.documentAction1 = new DocumentActionTopBar(page);
+        this.documentNavigationHeader = new DocumentNavigationHeader(page);
+        this.documentList = new DocumentList(page)
+        this.documentAction = new DocumentActionTopBar(page);
         this.documentDialog = new DocumentDialog(page);
-        this.trashFolder = new DocumentSidebar(page);
+        this.documentSidebar = new DocumentSidebar(page);
+    }
+
+    async moveToDocument(){
+        await this.documentNavigationHeader.openDocumentsButton.click()
+    }
+    async refreshDocumentLists(){
+        await this.documentAction.refreshButton.click()
+
     }
 
     async documentProcess(): Promise<void> {
-        await this.documentFolderButton.moveToDocumentFolder()
-        await this.documentAction1.refresh()
-
-        await this.documentChooseButton.chooseDocument()
-        await this.documentAction1.documentMove()
-        await this.documentDialog.clicktrashFolder()
+        await this.documentList.documentChooseButton.click()
+        await this.documentAction.moveButton.click()
+        await this.documentDialog.trashFolderButton.click()
         await this.documentDialog.moveDocument()
-        await this.documentDialog.clickConfirm()
-        await this.trashFolder.moveToTrash()
+        await this.documentDialog.confirmButton.click()
+        await this.documentSidebar.trashButton.click()
         await new ButtonElement(this.page.locator('div.GCSDBRWBOBC')).toBeVisible()
     }
 }

@@ -3,8 +3,8 @@ import {BaseComponent} from "./base-components";
 import {ButtonElement} from "../ui-wrappers/buttons-element";
 
 export class NavigationHeader extends BaseComponent {
-    private messageIcon: ButtonElement;
-    private documentIcon: ButtonElement;
+    public messageIcon: ButtonElement;
+    protected documentIcon: ButtonElement;
 
     constructor(page: Page) {
         super()
@@ -12,11 +12,4 @@ export class NavigationHeader extends BaseComponent {
         this.documentIcon = new ButtonElement(page.locator('.icon24-Documents.toolImg'))
     }
 
-    async moveToMessage(): Promise<void> {
-        await this.messageIcon.click()
-    }
-
-    async moveToDocument(): Promise<void> {
-        await this.documentIcon.click()
-    }
 }

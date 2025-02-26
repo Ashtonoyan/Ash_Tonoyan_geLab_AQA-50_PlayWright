@@ -1,4 +1,4 @@
-import {Page, Locator} from "@playwright/test";
+import {Locator} from "@playwright/test";
 import {test} from "playwright/test";
 
 export class BaseElement {
@@ -12,16 +12,6 @@ export class BaseElement {
         this.locator = locator;
         this.name = name;
     }
-
-    /* if (selector) {
-         this.locator = (pageOrLocator as Page).locator(selector);
-     } else {
-         this.locator = pageOrLocator as Locator;
-     }
-     this.name = name;
- }
-
-     */
 
     async click(options?: Parameters<Locator["click"]>[0]) {
         await test.step(`Click ${this.name}`, async () => {
@@ -52,7 +42,6 @@ export class BaseElement {
 
     async waitForSelector(options: { timeout?: number } = {}) {
         await test.step(`Wait for ${this.name} to appear`, async () => {
-            // Using the provided selector and options (timeout)
             await this.locator.waitFor({
                 timeout: options.timeout || 30000,
             });

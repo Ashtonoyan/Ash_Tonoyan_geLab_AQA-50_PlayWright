@@ -9,38 +9,44 @@ import {MessageNewMailForm} from "../components/message-new-mail-form-component"
 import {DocumentDialog} from "../components/document-dialog-component";
 
 export class MailCreate extends BasePage {
-    private navigateSibar: NavigationSideBar
-    private navigateHeader: NavigationHeader
-    private emailPreview: EmailPreviewArea
-    private topBar: MessagesActionsTopBar
-    private mailText1: MessageNewMailForm
+    private navigateSidebarButtons: NavigationSideBar
+    private navigateHeaderButtons: NavigationHeader
+    private emailDetails: EmailPreviewArea
+    private messageActionsBar: MessagesActionsTopBar
+    private newMailForm: MessageNewMailForm
     private emailList: EmailsList
-    private documentFolder: DocumentDialog
+    private documentDialog: DocumentDialog
 
     constructor(page: Page, subjectRandom: string) {
         super(page);
-        this.navigateSibar = new NavigationSideBar(page)
-        this.navigateHeader = new NavigationHeader(page)
-        this.emailPreview = new EmailPreviewArea(page)
-        this.topBar = new MessagesActionsTopBar(page)
-        this.mailText1 = new MessageNewMailForm(page)
-        this.navigateSibar = new NavigationSideBar(page)
-        this.navigateHeader = new NavigationHeader(page)
+        this.navigateSidebarButtons = new NavigationSideBar(page)
+        this.navigateHeaderButtons = new NavigationHeader(page)
+        this.emailDetails = new EmailPreviewArea(page)
+        this.messageActionsBar = new MessagesActionsTopBar(page)
+        this.newMailForm = new MessageNewMailForm(page)
         this.emailList = new EmailsList(page, subjectRandom)
-        this.emailPreview = new EmailPreviewArea(page)
-        this.topBar = new MessagesActionsTopBar(page)
-        this.documentFolder = new DocumentDialog(page)
+        this.documentDialog = new DocumentDialog(page)
     }
 
-    async createMail(mailtext: string, subject: string, file: string): Promise<void> {
-        await this.navigateHeader.moveToMessage()
-        await this.topBar.createMail()
-        await this.mailText1.createMessage(mailtext, subject, file)
+    async goToMessage(){
+        await this.navigateHeaderButtons.messageIcon.click()
     }
 
-    async documentSave(): Promise<void> {
-        await this.navigateSibar.moveToInbox()
-        await this.topBar.refresh()
+    async createSendMail(mailtext: string, subject: string, file: string): Promise<void> {
+        await this.messageActionsBar.newMail.click()
+        await this.newMailForm.fillMessage(mailtext, subject, file)
+        await this.newMailForm.sendButton.click()
+    }
+
+    async goToEmailList(){
+        await this.navigateSidebarButtons.inbox.click()
+    }
+
+    async refreshMessages(): Promise<void> {
+        await this.messageActionsBar.refreshButton.click()
+    }
+
+    async findMessagesAndDocumentSave(): Promise<void> {
 
         let counter = 0;
 
@@ -51,7 +57,7 @@ export class MailCreate extends BasePage {
             } catch (e) {
                 counter++;
                 console.log('Element not found, reloading page...');
-                await this.topBar.refresh()
+                await this.messageActionsBar.refreshButton.click()
             }
 
         }
@@ -59,9 +65,9 @@ export class MailCreate extends BasePage {
             throw new Error('Email not found after 10 attempts.');
         }
 
-        await this.emailPreview.saveChoose()
-        await this.emailPreview.chooseSaveInDocument()
-        await this.documentFolder.clickDocumentFolder()
-        await this.documentFolder.moveDocument()
+        await this.emailDetails.saveTypeButton.click({button: 'right'})
+        await this.emailDetails.saveInDocument.click()
+        await this.documentDialog.documentFolderSelectButton.click()
+        await this.documentDialog.moveDocument()
     }
 }

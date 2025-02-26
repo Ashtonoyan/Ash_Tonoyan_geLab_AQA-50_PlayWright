@@ -11,9 +11,10 @@ export class MessageNewMailForm extends BaseComponent {
     private frameField: Frame
     private fileButton: ButtonElement;
     private fileField: UploadFile;
-    private sendButton: ButtonElement;
     private scroolView: ButtonElement;
     private loadingWait: ButtonElement
+    public sendButton: ButtonElement;
+
 
     constructor(page: Page) {
         super();
@@ -28,7 +29,7 @@ export class MessageNewMailForm extends BaseComponent {
 
     }
 
-    async createMessage(mailtext: string, subject: string, file: string) {
+    async fillMessage(mailtext: string, subject: string, file: string) {
         await this.mailTo.fill(mailtext)
         await this.subjectField.fill(subject)
         await this.frameField.fill(this.frameField.findLocator('body.editable[role="textbox"]'), 'ashtonoyan@mailfence.com')
@@ -36,7 +37,7 @@ export class MessageNewMailForm extends BaseComponent {
         await this.scroolView.scroolViewIfNeeded();
         await this.fileField.uploadFile(file)
         await this.loadingWait.waitForElement()
-        await this.sendButton.click()
 
     }
+
 }
