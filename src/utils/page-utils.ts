@@ -1,15 +1,14 @@
-// utils/page-utils.ts
-import { Page } from 'playwright';
+import {Page} from '@playwright/test';
 
-let pageInstance: Page | null = null;
+let pageInstance: Page;
 
-export const setPage = (page: Page) => {
+export function setPage(page: Page) {
     pageInstance = page;
-};
+}
 
-export const getPage = (): Page => {
+export function getPage(): Page {
     if (!pageInstance) {
-        throw new Error('Page instance is not set. Ensure the fixture is properly initialized.');
+        throw new Error('Page instance is not set. Make sure the fixture is being used.');
     }
     return pageInstance;
-};
+}
