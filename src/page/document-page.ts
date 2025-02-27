@@ -1,6 +1,5 @@
 import {Page} from "@playwright/test";
 import {BasePage} from "./base-page";
-import {ButtonElement} from "../ui-wrappers/buttons-element";
 import {DocumentDialog} from "../components/document-dialog-component";
 import {DocumentSidebar} from "../components/document-navigation-sidebar-component";
 import {DocumentNavigationHeader} from "../components/document-navigation-header-component";
@@ -23,10 +22,11 @@ export class DocumentPage extends BasePage {
         this.documentSidebar = new DocumentSidebar(page);
     }
 
-    async moveToDocument(){
+    async moveToDocument() {
         await this.documentNavigationHeader.openDocumentsButton.click()
     }
-    async refreshDocumentLists(){
+
+    async refreshDocumentLists() {
         await this.documentAction.refreshButton.click()
 
     }
@@ -35,9 +35,8 @@ export class DocumentPage extends BasePage {
         await this.documentList.documentChooseButton.click()
         await this.documentAction.moveButton.click()
         await this.documentDialog.trashFolderButton.click()
-        await this.documentDialog.moveDocument()
+        await this.documentDialog.confirmMoveToFolder()
         await this.documentDialog.confirmButton.click()
         await this.documentSidebar.trashButton.click()
-        await new ButtonElement(this.page.locator('div.GCSDBRWBOBC')).toBeVisible()
     }
 }

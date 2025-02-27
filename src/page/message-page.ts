@@ -8,7 +8,7 @@ import {MessagesActionsTopBar} from "../components/mail-messages-actions-top-bar
 import {MessageNewMailForm} from "../components/message-new-mail-form-component";
 import {DocumentDialog} from "../components/document-dialog-component";
 
-export class MailCreate extends BasePage {
+export class MessagePage extends BasePage {
     private navigateSidebarButtons: NavigationSideBar
     private navigateHeaderButtons: NavigationHeader
     private emailDetails: EmailPreviewArea
@@ -28,7 +28,7 @@ export class MailCreate extends BasePage {
         this.documentDialog = new DocumentDialog(page)
     }
 
-    async goToMessage(){
+    async goToMessage() {
         await this.navigateHeaderButtons.messageIcon.click()
     }
 
@@ -38,7 +38,7 @@ export class MailCreate extends BasePage {
         await this.newMailForm.sendButton.click()
     }
 
-    async goToEmailList(){
+    async goToEmailList() {
         await this.navigateSidebarButtons.inbox.click()
     }
 
@@ -46,7 +46,7 @@ export class MailCreate extends BasePage {
         await this.messageActionsBar.refreshButton.click()
     }
 
-    async findMessagesAndDocumentSave(): Promise<void> {
+    async findMessages(): Promise<void> {
 
         let counter = 0;
 
@@ -57,17 +57,19 @@ export class MailCreate extends BasePage {
             } catch (e) {
                 counter++;
                 console.log('Element not found, reloading page...');
-                await this.messageActionsBar.refreshButton.click()
+                await this.refreshMessages()
             }
 
         }
         if (counter === 10) {
             throw new Error('Email not found after 10 attempts.');
         }
+    }
 
+    async saveDocument() {
         await this.emailDetails.saveTypeButton.click({button: 'right'})
         await this.emailDetails.saveInDocument.click()
         await this.documentDialog.documentFolderSelectButton.click()
-        await this.documentDialog.moveDocument()
+        await this.documentDialog.confirmMoveToFolder()
     }
 }

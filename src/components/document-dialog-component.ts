@@ -16,7 +16,7 @@ export class DocumentDialog extends BaseComponent {
         this.confirmButton = new ButtonElement(page.locator('#dialBtn_YES'))
     }
 
-    async moveDocument(): Promise<void> {
+    async confirmMoveToFolder(): Promise<void> {
         await this.moveToFolder.toAttached()
         await this.moveToFolder.toHaveCSS()
         await this.moveToFolder.click();

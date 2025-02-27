@@ -1,8 +1,7 @@
 import {Locator} from "@playwright/test";
 import {test} from "playwright/test";
 import {BaseElement} from "./base-element";
-
-const fs = require('fs');
+import * as fs from 'fs';
 
 export class UploadFile extends BaseElement {
     constructor(locator: Locator, name?: string,) {
