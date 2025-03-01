@@ -1,24 +1,21 @@
-import {Page} from "@playwright/test";
 import {BaseComponent} from "./base-components";
 import {ButtonElement} from "../ui-wrappers/buttons-element";
+import {getPage} from "../utils/page-utils";
+import {test} from "playwright/test";
 
 export class DocumentDialog extends BaseComponent {
-    public documentFolderSelectButton: ButtonElement;
-    public trashFolderButton: ButtonElement;
-    public confirmButton: ButtonElement;
-    private moveToFolder: ButtonElement;
+    public static documentFolderSelectButton = () => new ButtonElement(getPage().locator('div[hidefocus="true"] div.treeItemLabel:not(#doc_tree_trash)'));
+    public static trashFolderButton = () => new ButtonElement(getPage().locator('div[hidefocus="true"] div#doc_tree_trash:not(#treeItemLabel)'));
+    public static confirmButton = () => new ButtonElement(getPage().locator('#dialBtn_YES'));
+    private static moveToFolder = () => new ButtonElement(getPage().locator('#dialBtn_OK'), 'buttonOk');
 
-    constructor(page: Page) {
-        super();
-        this.documentFolderSelectButton = new ButtonElement(page.locator('div[hidefocus="true"] div.treeItemLabel:not(#doc_tree_trash)'));
-        this.trashFolderButton = new ButtonElement(page.locator('div[hidefocus="true"] div#doc_tree_trash:not(#treeItemLabel)'));
-        this.moveToFolder = new ButtonElement(page.locator('#dialBtn_OK'), 'buttonOk')
-        this.confirmButton = new ButtonElement(page.locator('#dialBtn_YES'))
-    }
 
-    async confirmMoveToFolder(): Promise<void> {
-        await this.moveToFolder.toAttached()
-        await this.moveToFolder.toHaveCSS()
-        await this.moveToFolder.click();
+    static async confirmMoveToFolder(): Promise<void> {
+        await test.step("Confirm move to folder", async () => {
+            await this.moveToFolder().toAttached()
+            await this.moveToFolder().toHaveCSS()
+            await this.moveToFolder().click();
+        })
+
     }
 }

@@ -2,23 +2,23 @@ import {Page} from "@playwright/test";
 import {BasePage} from "./base-page";
 import {InputField} from "../ui-wrappers/input-field-element";
 import {ButtonElement} from "../ui-wrappers/buttons-element";
+import {getPage} from "../utils/page-utils";
+import {test} from "playwright/test";
 
 export class LoginPage extends BasePage {
-    private emailInput: InputField;
-    private passwordInput: InputField;
-    private loginButton: ButtonElement;
+    private static emailInput = () => new InputField(getPage().locator('#UserID'), 'Email field')
+    private static passwordInput = () => new InputField(getPage().locator('#Password'), 'Password')
+    private static loginButton = () => new ButtonElement(getPage().locator('input.btn[type="submit"]'))
 
-    constructor(page: Page) {
-        super(page);
-        this.emailInput = new InputField(page.locator('#UserID'), 'Email field')
-        this.passwordInput = new InputField(page.locator('#Password'), 'Password field')
-        this.loginButton = new ButtonElement(page.locator('input.btn[type="submit"]'))
-    }
 
-    async login(email: string, password: string): Promise<void> {
-        await this.emailInput.fill(email)
-        await this.passwordInput.fill(password)
-        await this.loginButton.click()
+    static async login(email: string, password: string): Promise<void> {
+        await test.step(`Login as user ${email}`, async () => {
+            await this.emailInput().fill(email)
+            await this.passwordInput().fill(password)
+            await this.loginButton().click()
+        })
+
+
     }
 
 }

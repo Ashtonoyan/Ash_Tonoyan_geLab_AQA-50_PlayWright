@@ -1,15 +1,8 @@
-import {Page} from "@playwright/test";
 import {BaseComponent} from "./base-components";
 import {ButtonElement} from "../ui-wrappers/buttons-element";
+import {getPage} from "../utils/page-utils";
 
 export class DocumentActionTopBar extends BaseComponent {
-    public refreshButton: ButtonElement;
-    public moveButton: ButtonElement
-
-    constructor(page: Page) {
-        super();
-        this.refreshButton = new ButtonElement(page.locator('div.icon.icon16-Refresh'), 'Refresh Button')
-        this.moveButton = new ButtonElement(page.locator('.icon.icon16-Move'))
-    }
-
+    public static refreshButton = () => new ButtonElement(getPage().locator('div.icon.icon16-Refresh'), 'Refresh Button');
+    public static moveButton = () => new ButtonElement(getPage().locator('.icon.icon16-Move'))
 }

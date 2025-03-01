@@ -16,21 +16,20 @@ test.describe("MailFence Tests", () => {
     test("Send and process email", async () => {
         const page = getPage();
         await page.goto(process.env.MAILFENCE_LOGIN_URL!)
-        const emailPage = new LoginPage(page)
-        await emailPage.login(process.env.USER_EMAIL!, process.env.USER_PASSWORD!)
+        await LoginPage.login(process.env.USER_EMAIL!, process.env.USER_PASSWORD!)
 
-        const sendMail = new MessagePage(page, subjectRandom)
-        await sendMail.goToMessage()
-        await sendMail.createFillSendMail(process.env.MAIL_TEXT!, subjectRandom, filePath)
+        await MessagePage.goToMessage()
+        await MessagePage.createFillSendMail(process.env.MAIL_TEXT!, subjectRandom, filePath)
         await page.reload();
-        await sendMail.goToEmailList()
-        await sendMail.refreshMessages()
-        await sendMail.findMessages()
-        await sendMail.saveDocument()
-        const processDocument = new DocumentPage(page)
-        await processDocument.moveToDocument()
-        await processDocument.refreshDocumentLists()
-        await processDocument.documentProcess()
+        await MessagePage.goToEmailList()
+        await MessagePage.refreshMessages()
+
+        await MessagePage.findMessages(subjectRandom)
+        await MessagePage.saveDocument()
+        await DocumentPage.moveToDocument()
+        await DocumentPage.refreshDocumentLists()
+        await DocumentPage.documentProcess()
+
 
     })
 

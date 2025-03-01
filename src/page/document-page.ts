@@ -1,4 +1,3 @@
-import {Page} from "@playwright/test";
 import {BasePage} from "./base-page";
 import {DocumentDialog} from "../components/document-dialog-component";
 import {DocumentSidebar} from "../components/document-navigation-sidebar-component";
@@ -6,37 +5,23 @@ import {DocumentNavigationHeader} from "../components/document-navigation-header
 import {DocumentActionTopBar} from "../components/document-action-topbar-component";
 import {DocumentList} from "../components/document-list-component";
 
+
 export class DocumentPage extends BasePage {
-    private documentNavigationHeader: DocumentNavigationHeader;
-    private documentList: DocumentList;
-    private documentAction: DocumentActionTopBar
-    private documentDialog: DocumentDialog
-    private documentSidebar: DocumentSidebar
 
-    constructor(page: Page) {
-        super(page);
-        this.documentNavigationHeader = new DocumentNavigationHeader(page);
-        this.documentList = new DocumentList(page)
-        this.documentAction = new DocumentActionTopBar(page);
-        this.documentDialog = new DocumentDialog(page);
-        this.documentSidebar = new DocumentSidebar(page);
+    static async moveToDocument() {
+        await DocumentNavigationHeader.openDocumentsButton().click();
     }
 
-    async moveToDocument() {
-        await this.documentNavigationHeader.openDocumentsButton.click()
+    static async refreshDocumentLists() {
+        await DocumentActionTopBar.refreshButton().click()
     }
 
-    async refreshDocumentLists() {
-        await this.documentAction.refreshButton.click()
-
-    }
-
-    async documentProcess(): Promise<void> {
-        await this.documentList.documentChooseButton.click()
-        await this.documentAction.moveButton.click()
-        await this.documentDialog.trashFolderButton.click()
-        await this.documentDialog.confirmMoveToFolder()
-        await this.documentDialog.confirmButton.click()
-        await this.documentSidebar.trashButton.click()
+    static async documentProcess(): Promise<void> {
+        await DocumentList.documentChooseButton().click()
+        await DocumentActionTopBar.moveButton().click()
+        await DocumentDialog.trashFolderButton().click()
+        await DocumentDialog.confirmMoveToFolder()
+        await DocumentDialog.confirmButton().click()
+        await DocumentSidebar.trashButton().click()
     }
 }
