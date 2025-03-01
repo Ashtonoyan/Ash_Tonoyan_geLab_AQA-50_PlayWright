@@ -1,8 +1,7 @@
-import {Page} from "@playwright/test";
 import {BasePage} from "./base-page";
 import {InputField} from "../ui-wrappers/input-field-element";
 import {ButtonElement} from "../ui-wrappers/buttons-element";
-import {getPage} from "../utils/page-utils";
+import {getPage} from "../core/utils/page-utils";
 import {test} from "playwright/test";
 
 export class LoginPage extends BasePage {

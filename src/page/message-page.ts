@@ -8,7 +8,7 @@ import {MessageNewMailForm} from "../components/message-new-mail-form-component"
 import {DocumentDialog} from "../components/document-dialog-component";
 import {test} from "playwright/test";
 
-export class MessagePage extends BasePage {
+export class MessagesPage extends BasePage {
     static async goToMessage() {
         await test.step('Go to Message', async () => {
             await NavigationHeader.messageIcon().click()
@@ -40,7 +40,7 @@ export class MessagePage extends BasePage {
     }
 
     static async findMessages(subjectRandom: string): Promise<void> {
-        await test.step('Finding messages', async () => {
+        await test.step('Find messages', async () => {
             let counter = 0;
 
             while (counter < 10) {

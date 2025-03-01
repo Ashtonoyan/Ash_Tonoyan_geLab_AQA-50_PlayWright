@@ -1,6 +1,6 @@
 import {BaseComponent} from "./base-components";
 import {ButtonElement} from "../ui-wrappers/buttons-element";
-import {getPage} from "../utils/page-utils";
+import {getPage} from "../core/utils/page-utils";
 
 export class MessagesActionsTopBar extends BaseComponent {
     public static newMail = () => new ButtonElement(getPage().locator('#mailNewBtn'), 'Mail Create Button')

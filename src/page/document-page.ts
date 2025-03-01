@@ -4,16 +4,21 @@ import {DocumentSidebar} from "../components/document-navigation-sidebar-compone
 import {DocumentNavigationHeader} from "../components/document-navigation-header-component";
 import {DocumentActionTopBar} from "../components/document-action-topbar-component";
 import {DocumentList} from "../components/document-list-component";
+import {test} from "playwright/test";
 
 
-export class DocumentPage extends BasePage {
+export class DocumentsPage extends BasePage {
 
     static async moveToDocument() {
-        await DocumentNavigationHeader.openDocumentsButton().click();
+        await test.step('Move document page', async () => {
+            await DocumentNavigationHeader.openDocumentsButton().click();
+        })
     }
 
     static async refreshDocumentLists() {
-        await DocumentActionTopBar.refreshButton().click()
+        await test.step('Refresh document lists', async () => {
+            await DocumentActionTopBar.refreshButton().click()
+        })
     }
 
     static async documentProcess(): Promise<void> {

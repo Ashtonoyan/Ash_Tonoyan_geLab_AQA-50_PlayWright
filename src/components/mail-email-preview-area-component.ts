@@ -1,6 +1,6 @@
 import {BaseComponent} from "./base-components";
 import {ButtonElement} from "../ui-wrappers/buttons-element";
-import {getPage} from "../utils/page-utils";
+import {getPage} from "../core/utils/page-utils";
 
 export class EmailPreviewArea extends BaseComponent {
     public static saveTypeButton = () => new ButtonElement(getPage().locator('a.GCSDBRWBJRB'));

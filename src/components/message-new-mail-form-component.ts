@@ -4,7 +4,7 @@ import {ButtonElement} from "../ui-wrappers/buttons-element";
 import {Frame} from "../ui-wrappers/frame-element";
 import {InputField} from "../ui-wrappers/input-field-element";
 import {UploadFile} from "../ui-wrappers/upload-file-element";
-import {getPage} from "../utils/page-utils";
+import {getPage} from "../core/utils/page-utils";
 import {test} from "playwright/test";
 
 export class MessageNewMailForm extends BaseComponent {
