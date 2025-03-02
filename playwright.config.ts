@@ -7,29 +7,45 @@ dotenv.config();
 
 export default defineConfig({
     testDir: './tests',
-    timeout: 30_1000,
-    reporter: 'html',
-    workers: process.env.CI ? 1 : 4,
+    timeout: 40_1000,
+    expect: {
+        timeout: 10_1000
+    },
+    workers: 4,
+    fullyParallel: true,
     use: {
         headless: false,
         viewport: { width: 1280, height: 720 },
-        //baseURL: process.env.MAILFENCE_LOGIN_URL!,
         actionTimeout: 10_1000,
         trace: 'on',
-        video: 'off',
+        video: 'retain-on-failure',
         screenshot: 'only-on-failure',
     },
     projects: [
         { name: 'setup', testMatch: /.*\.setup\.ts/ },
 
         {
-            name: 'default',
+            name: 'chromium',
             use: {
+                ...devices['Desktop Chrome'],
                 storageState: '.auth/user.json',
             },
             dependencies: ['setup'],
         },
 
-    ]
+        {
+            name: 'webkit',
+            use: {
+                ...devices['Desktop Safari'],
+                storageState: '.auth/user.json',
+            },
+        },
+
+    ],
+    retries: 2,
+    reporter: [
+        ['json', { outputFile: 'test-results/results.json' }],
+        ['html', { open: 'never' }],
+    ],
 
 });
