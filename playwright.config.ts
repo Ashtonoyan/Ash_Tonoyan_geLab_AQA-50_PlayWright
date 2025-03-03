@@ -1,6 +1,6 @@
-import { defineConfig } from '@playwright/test';
+import {defineConfig} from '@playwright/test';
 import * as dotenv from 'dotenv';
-import { devices } from '@playwright/test';
+import {devices} from '@playwright/test';
 
 
 dotenv.config();
@@ -15,14 +15,14 @@ export default defineConfig({
     fullyParallel: true,
     use: {
         headless: false,
-        viewport: { width: 1280, height: 720 },
+        viewport: {width: 1280, height: 720},
         actionTimeout: 10_1000,
         trace: 'on',
         video: 'retain-on-failure',
         screenshot: 'only-on-failure',
     },
     projects: [
-        { name: 'setup', testMatch: /.*\.setup\.ts/ },
+        {name: 'setup', testMatch: /.*\.setup\.ts/},
 
         {
             name: 'chromium',
@@ -31,6 +31,10 @@ export default defineConfig({
                 storageState: '.auth/user.json',
             },
             dependencies: ['setup'],
+            testMatch: [
+                '**/*.feature',
+                '**/*.spec.ts',
+            ],
         },
 
         {
@@ -41,11 +45,12 @@ export default defineConfig({
             },
         },
 
+
     ],
     retries: 2,
     reporter: [
-        ['json', { outputFile: 'test-results/results.json' }],
-        ['html', { open: 'never' }],
+        ['json', {outputFile: 'test-results/results.json'}],
+        ['html', {open: 'never'}],
     ],
 
 });

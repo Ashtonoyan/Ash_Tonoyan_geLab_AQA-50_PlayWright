@@ -3,19 +3,18 @@ import {MessagesPage} from "../src/page/message-page";
 import {DocumentsPage} from "../src/page/document-page";
 import {test} from '../src/core/fixtures/page-fixture';
 import {getPage} from '../src/core/utils/page-utils';
-import path from 'path';
-
-const filePath = path.resolve(__dirname, process.env.TEST_FILE_PATH as string);
 
 
 test.describe("MailFence Tests", () => {
 
-    test("Send and process email", async () => {
-        const subjectRandom = "AT_C2256_" + faker.string.alphanumeric(10).toUpperCase();
+    test("Send and process email", async ({subjectRandom, filePath, fileName}) => {
 
         const page = getPage();
 
         await page.goto(process.env.MAILFENCE_MAIN_URL!)
+        console.log(subjectRandom);
+        console.log(filePath);
+        console.log(fileName);
 
         await MessagesPage.goToMessage()
         await MessagesPage.createFillSendMail(process.env.MAIL_TEXT!, subjectRandom, filePath)
@@ -28,19 +27,19 @@ test.describe("MailFence Tests", () => {
         await DocumentsPage.moveToDocument()
         await DocumentsPage.refreshDocumentLists()
         await DocumentsPage.documentProcess()
+        await DocumentsPage.goToTrash()
+        await DocumentsPage.waitDocument(fileName)
 
 
     })
 
-    test("COPIED VERSION:Send and process email ", async () => {
-        const subjectRandom = "AT_C2256_" + faker.string.alphanumeric(10).toUpperCase();
+    test("COPIED VERSION:Send and process email ", async ({subjectRandom, filePath, fileName}) => {
 
         const page = getPage();
         await page.goto(process.env.MAILFENCE_MAIN_URL!)
 
         await MessagesPage.goToMessage()
         await MessagesPage.createFillSendMail(process.env.MAIL_TEXT!, subjectRandom, filePath)
-        await page.reload();
         await MessagesPage.goToEmailList()
         await MessagesPage.refreshMessages()
 
@@ -49,7 +48,8 @@ test.describe("MailFence Tests", () => {
         await DocumentsPage.moveToDocument()
         await DocumentsPage.refreshDocumentLists()
         await DocumentsPage.documentProcess()
-
+        await DocumentsPage.goToTrash()
+        await DocumentsPage.waitDocument(fileName)
 
     })
 

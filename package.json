@@ -7,13 +7,16 @@
     "build": "tsc"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^11.2.0",
     "@playwright/test": "^1.50.1",
     "@types/node": "^22.13.1",
     "playwright": "^1.50.1",
+    "playwright-bdd": "^8.2.0",
     "typescript": "^5.7.3"
   },
   "private": true,
   "dependencies": {
+    "@cucumber/gherkin": "^32.0.0",
     "@faker-js/faker": "^9.5.0",
     "dotenv": "^16.4.7"
   }
