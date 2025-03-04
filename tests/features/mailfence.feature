@@ -3,7 +3,8 @@ Feature: Mailfence e2e test
   Scenario Outline: Send and process email
     Given I am logging into the site using an existing account
     When I navigate to the Messages page
-    And I create new message with <subjectRandom>, fill file <filePath> and send to myself
+    And I create new message with <subjectRandom>, fill file <filePath>
+    And I send to myself
     And I navigate to Email list
     And I refresh Email list
     Then I should see the sent email with <subjectRandom> in my inbox

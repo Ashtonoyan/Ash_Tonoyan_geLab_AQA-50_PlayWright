@@ -4,25 +4,24 @@ import {DocumentSidebar} from "../components/document-navigation-sidebar-compone
 import {DocumentNavigationHeader} from "../components/document-navigation-header-component";
 import {DocumentActionTopBar} from "../components/document-action-topbar-component";
 import {DocumentList} from "../components/document-list-component";
-import {test, expect} from "playwright/test";
-import {getPage} from "../core/utils/page-utils";
+import {test} from "playwright/test";
 
 
 export class DocumentsPage extends BasePage {
 
-    static async moveToDocument() {
+    static async goToDocumentsPage() {
         await test.step('Move document page', async () => {
             await DocumentNavigationHeader.openDocumentsButton().click();
         })
     }
 
-    static async refreshDocumentLists() {
+    static async refreshDocumentList() {
         await test.step('Refresh document lists', async () => {
             await DocumentActionTopBar.refreshButton().click()
         })
     }
 
-    static async documentProcess(): Promise<void> {
+    static async moveFileToTrash(): Promise<void> {
         await DocumentList.documentChooseButton().click()
         await DocumentActionTopBar.moveButton().click()
         await DocumentDialog.trashFolderButton().click()
@@ -34,9 +33,4 @@ export class DocumentsPage extends BasePage {
         await DocumentSidebar.trashButton().click()
     }
 
-    static async waitDocument(fileName: string): Promise<void> {
-        const locator = getPage().locator(`[title="${fileName}"]`);
-
-        await expect(locator).toBeVisible();
-    }
 }
