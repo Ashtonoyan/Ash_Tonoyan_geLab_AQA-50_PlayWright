@@ -36,7 +36,7 @@ export default defineConfig({
                 '**/*.spec.ts',
             ],
         },
-/*
+
         {
             name: 'webkit',
             use: {
@@ -45,7 +45,7 @@ export default defineConfig({
             },
         },
 
- */
+
 
 
     ],
