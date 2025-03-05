@@ -1,5 +1,4 @@
-import {Page, Locator} from "@playwright/test";
-import {ButtonElement} from "../ui-wrappers/buttons-element";
+import {Page} from "@playwright/test";
 
 export class BasePage {
     protected page: Page;

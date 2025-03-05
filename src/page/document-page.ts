@@ -21,15 +21,15 @@ export class DocumentsPage extends BasePage {
         })
     }
 
-    static async moveFileToTrash(): Promise<void> {
-        await DocumentList.documentChooseButton().click()
+    static async moveFileToTrash(filename: string): Promise<void> {
+        await DocumentList.documentChooseButton(filename).click()
         await DocumentActionTopBar.moveButton().click()
         await DocumentDialog.trashFolderButton().click()
         await DocumentDialog.confirmMoveToFolder()
         await DocumentDialog.confirmButton().click()
     }
 
-    static async goToTrash(){
+    static async goToTrash() {
         await DocumentSidebar.trashButton().click()
     }
 

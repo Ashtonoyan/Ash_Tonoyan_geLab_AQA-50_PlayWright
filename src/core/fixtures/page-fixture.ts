@@ -1,7 +1,5 @@
 import {test as base} from '@playwright/test';
 import {setPage} from '../utils/page-utils';
-import path from 'path';
-import {faker} from '@faker-js/faker'
 
 export type TestOptions = {
     testHooks: string;

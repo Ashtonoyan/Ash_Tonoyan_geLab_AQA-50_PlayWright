@@ -2,7 +2,6 @@ import {Locator} from "@playwright/test";
 import {test} from "playwright/test";
 
 export class BaseElement {
-
     locator: Locator;
     name: string | undefined;
 
@@ -18,7 +17,6 @@ export class BaseElement {
             await this.locator.click(options);
         });
     }
-
 
 
     async toAttached() {

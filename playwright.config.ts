@@ -7,16 +7,21 @@ dotenv.config();
 
 export default defineConfig({
     testDir: './tests',
-    timeout: 40_1000,
+    timeout: 30_000,
     expect: {
-        timeout: 10_1000
+        timeout: 10_000
     },
     workers: 4,
     fullyParallel: true,
+    retries: process.env.CI ? 2 : 0,
+    reporter: [
+        ['json', {outputFile: 'test-results/results.json'}],
+        ['html', {open: 'never'}],
+    ],
     use: {
         headless: false,
         viewport: {width: 1280, height: 720},
-        actionTimeout: 10_1000,
+        actionTimeout: 10_000,
         trace: 'on',
         video: 'retain-on-failure',
         screenshot: 'only-on-failure',
@@ -46,13 +51,6 @@ export default defineConfig({
         },
 
 
-
-
-    ],
-    retries: 2,
-    reporter: [
-        ['json', {outputFile: 'test-results/results.json'}],
-        ['html', {open: 'never'}],
     ],
 
 

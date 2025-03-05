@@ -1,5 +1,4 @@
 import {test as setup} from '../../src/core/fixtures/page-fixture';
-import { expect } from '@playwright/test';
 import path from 'path';
 import {getPage} from "../../src/core/utils/page-utils";
 import {LoginPage} from "../../src/page/login-page";
@@ -14,6 +13,6 @@ setup('Authenticate', async () => {
     await LoginPage.login(process.env.USER_EMAIL!, process.env.USER_PASSWORD!)
     await MessagesActionsTopBar.newMail().toBeVisible();
 
-    await page.context().storageState({ path: authFile });
+    await page.context().storageState({path: authFile});
 
 })

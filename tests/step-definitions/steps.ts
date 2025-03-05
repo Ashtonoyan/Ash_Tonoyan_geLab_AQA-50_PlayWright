@@ -46,8 +46,8 @@ When('I refresh Document lists', async () => {
     await DocumentsPage.refreshDocumentList()
 })
 
-When('I move the file to the Trash folder.', async () => {
-    await DocumentsPage.moveFileToTrash()
+When('I move the file to the Trash folder.', async (filename: string) => {
+    await DocumentsPage.moveFileToTrash(filename)
 })
 
 When('I go to Trash folder', async () => {

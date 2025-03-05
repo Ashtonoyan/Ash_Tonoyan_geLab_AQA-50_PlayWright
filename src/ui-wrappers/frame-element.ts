@@ -1,4 +1,4 @@
-import {Page, FrameLocator, Locator} from "@playwright/test";
+import {FrameLocator, Locator} from "@playwright/test";
 import {test} from "@playwright/test";
 import {BaseElement} from "./base-element";
 
@@ -9,6 +9,7 @@ export class Frame extends BaseElement {
         super(frameLocator.locator(''), name);
         this.frameLocator = frameLocator;
     }
+
     findLocator(selector: string): Locator {
         return this.frameLocator.locator(selector);
     }
