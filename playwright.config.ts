@@ -1,6 +1,7 @@
 import {defineConfig} from '@playwright/test';
 import * as dotenv from 'dotenv';
 import {devices} from '@playwright/test';
+import { defineBddConfig } from 'playwright-bdd';
 
 
 dotenv.config();
@@ -41,7 +42,7 @@ export default defineConfig({
                 '**/*.spec.ts',
             ],
         },
-
+/*
         {
             name: 'webkit',
             use: {
@@ -50,8 +51,24 @@ export default defineConfig({
             },
         },
 
+ */
+        {
+            name: 'bdd',
+            use: {
+                browserName: 'chromium',
+                storageState: '.auth/user.json',
+            },
+            testDir: defineBddConfig({
+                features: './tests/features/*.feature',
+                steps: './tests/step-definitions/*.ts',
+            }),
+            dependencies: ['setup'],
+        },
+
 
     ],
+
+
 
 
 });
