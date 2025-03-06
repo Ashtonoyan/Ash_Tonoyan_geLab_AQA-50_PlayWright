@@ -37,10 +37,7 @@ export default defineConfig({
                 storageState: '.auth/user.json',
             },
             dependencies: ['setup'],
-            testMatch: [
-                '**/*.feature',
-                '**/*.spec.ts',
-            ],
+
         },
 /*
         {
@@ -61,6 +58,7 @@ export default defineConfig({
             testDir: defineBddConfig({
                 features: './tests/features/*.feature',
                 steps: './tests/step-definitions/*.ts',
+                importTestFrom: "./src/core/fixtures/bdd-fixture.ts",
             }),
             dependencies: ['setup'],
         },

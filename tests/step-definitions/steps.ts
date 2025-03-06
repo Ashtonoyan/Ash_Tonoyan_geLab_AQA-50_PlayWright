@@ -1,75 +1,61 @@
 import {MessagesPage} from "../../src/page/message-page";
 import {DocumentsPage} from "../../src/page/document-page";
-import {getPage} from "../../src/core/utils/page-utils";
+import {getPage, setPage} from "../../src/core/utils/page-utils";
 import { expect } from '@playwright/test';
 import { createBdd } from 'playwright-bdd';
 import {faker} from "@faker-js/faker";
 import {generateFile} from "../../src/core/utils/work-with-file";
 
+
 const { Given, When, Then } = createBdd();
-
-const subjectRandom = 'AT_C2256_' + faker.string.alphanumeric(10).toUpperCase();
-let fileName: string;
-let filePath: string;
-
-async function generateFileAndUseIt(): Promise<void> {
-    const { fileName: generatedFileName, filePath: generatedFilePath } = await generateFile();
-    fileName = generatedFileName;
-    filePath = generatedFilePath;
-}
+let subjectRandom: string
+let workWithFile: { fileName: string, filePath: string };
 
 
-Given('I am logging into the site using an existing account', async () => {
+Given('Login to mailfence', async () => {
 
 })
 
-When('I navigate to the Messages page', async () => {
+When('Navigate to the Messages page', async () => {
     await MessagesPage.goToMessagesPage()
 })
 
-When(/^I create new message with prexif (AT_C2256_), fill file with prefix (file_AT_C2256_)$/, async () => {
-    await MessagesPage.createAndFillMessage(process.env.MAIL_TEXT!, subjectRandom, filePath)
+When('Compose new email with file attachment name {string}', async ({}, prefix: string) => {
+    subjectRandom = `${prefix}_${faker.string.alphanumeric(10).toUpperCase()}`
+    workWithFile = await generateFile()
+    await MessagesPage.createAndFillMessage(process.env.MAIL_TEXT!, subjectRandom, workWithFile["filePath"])
 })
 
-When('I send to myself', async()=>{
+When('Send email to yourself', async()=>{
     await MessagesPage.sendMessageToSelf()
 })
 
 
-When('I navigate to Email list', async () => {
+When('Navigate to Email list', async () => {
     await MessagesPage.goToEmailList()
 })
 
-When('I refresh Email list', async () => {
-    await MessagesPage.refreshMessages()
-})
 
-Then('I should see the sent email in my inbox', async () => {
+When('Open the received email', async () => {
     await MessagesPage.findAndOpenMessage(subjectRandom)
 })
 
-When('I open new email and save the file from the message to the "My Documents" folder', async () => {
+When('Move attached file to My Documents', async () => {
     await MessagesPage.saveFileInDocumentsFolder()
 })
 
-When('I navigate to the My Documents page', async () => {
+When('Navigate to the My Documents page', async () => {
     await DocumentsPage.goToDocumentsPage()
 })
 
-When('I refresh Document lists', async () => {
-    await DocumentsPage.refreshDocumentList()
+When('Move txt file to Trash by drag and drop', async () => {
+    await DocumentsPage.moveFileToTrash(workWithFile["fileName"])
 })
 
-When('I move the file to the Trash folder.', async () => {
-    await DocumentsPage.moveFileToTrash(fileName)
-})
 
-When('I go to Trash folder', async () => {
+Then('Verify that txt file is in the Trash', async () => {
     await DocumentsPage.goToTrash()
-})
-
-Then(/^I should see the file with prefix (file_AT_C2256_) in folder$/, async () => {
-    await expect(getPage().locator(`[title="${fileName}"]`)).toBeVisible();
+    await expect(getPage().locator(`[title="${workWithFile["fileName"]}"]`)).toBeVisible();
 })
 
 

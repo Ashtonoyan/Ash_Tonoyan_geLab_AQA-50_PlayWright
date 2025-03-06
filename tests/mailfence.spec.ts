@@ -35,12 +35,12 @@ test.describe("MailFence Tests", () => {
         await MessagesPage.createAndFillMessage(process.env.MAIL_TEXT!, subjectRandom, filePath)
         await MessagesPage.sendMessageToSelf()
         await MessagesPage.goToEmailList()
-        await MessagesPage.refreshMessages()
+        //await MessagesPage.refreshMessages()
         await MessagesPage.findAndOpenMessage(subjectRandom)
         await MessagesPage.saveFileInDocumentsFolder()
 
         await DocumentsPage.goToDocumentsPage()
-        await DocumentsPage.refreshDocumentList()
+        //await DocumentsPage.refreshDocumentList()
         await DocumentsPage.moveFileToTrash(fileName)
         await DocumentsPage.goToTrash()
         await expect(getPage().locator(`[title="${fileName}"]`)).toBeVisible();
