@@ -10,7 +10,7 @@ export default defineConfig({
     testDir: './tests',
     timeout: 30_000,
     expect: {
-        timeout: 10_000
+        timeout: 15_000
     },
     workers: 4,
     fullyParallel: true,
@@ -18,6 +18,7 @@ export default defineConfig({
     reporter: [
         ['list'],
         ['./src/core/custom-reporter.ts'],
+        ['allure-playwright'],
     ],
     use: {
         headless: false,

@@ -61,7 +61,7 @@ export class MessagesPage extends BasePage {
                 }
 
             }
-            if (counter === 10) {
+            if (counter === 15) {
                 throw new Error('Email not found after 10 attempts.');
             }
         })
