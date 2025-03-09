@@ -13,8 +13,9 @@ test.describe("MailFence Tests", () => {
         const subjectRandom = 'AT_C2256_' + faker.string.alphanumeric(10).toUpperCase();
         const {fileName, filePath} = await generateFile()
         await MessagesPage.goToMessagesPage()
-        await MessagesPage.createAndFillMessage(process.env.MAIL_TEXT!, subjectRandom, filePath)
-        await MessagesPage.sendMessageToSelf()
+        await MessagesPage.createAndFillMessage(subjectRandom, filePath)
+        await deleteGenerateFile(filePath)
+        await MessagesPage.sendMessageToSelf(process.env.MAIL_TO!)
         await MessagesPage.goToEmailList()
         await MessagesPage.refreshMessages()
         await MessagesPage.findAndOpenMessage(subjectRandom)
@@ -25,26 +26,25 @@ test.describe("MailFence Tests", () => {
         await DocumentsPage.moveFileToTrash(fileName)
         await DocumentsPage.goToTrash()
         await expect(getPage().locator(`[title="${fileName}"]`)).toBeVisible();
-        await deleteGenerateFile(filePath)
+
     })
 
     test("COPIED VERSION:Send and process email ", async () => {
         const subjectRandom = 'AT_C2256_' + faker.string.alphanumeric(10).toUpperCase();
         const {fileName, filePath} = await generateFile()
         await MessagesPage.goToMessagesPage()
-        await MessagesPage.createAndFillMessage(process.env.MAIL_TEXT!, subjectRandom, filePath)
-        await MessagesPage.sendMessageToSelf()
+        await MessagesPage.createAndFillMessage(subjectRandom, filePath)
+        await deleteGenerateFile(filePath)
+        await MessagesPage.sendMessageToSelf(process.env.MAIL_TO!)
         await MessagesPage.goToEmailList()
-        //await MessagesPage.refreshMessages()
         await MessagesPage.findAndOpenMessage(subjectRandom)
         await MessagesPage.saveFileInDocumentsFolder()
 
         await DocumentsPage.goToDocumentsPage()
-        //await DocumentsPage.refreshDocumentList()
         await DocumentsPage.moveFileToTrash(fileName)
         await DocumentsPage.goToTrash()
         await expect(getPage().locator(`[title="${fileName}"]`)).toBeVisible();
-        await deleteGenerateFile(filePath)
+
     })
 
 

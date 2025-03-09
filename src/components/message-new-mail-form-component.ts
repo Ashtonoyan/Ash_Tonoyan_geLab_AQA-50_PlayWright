@@ -18,9 +18,8 @@ export class MessageNewMailForm extends BaseComponent {
     public static sendButton = () => new ButtonElement(getPage().locator('#mailSend'));
 
 
-    static async fillMessage(mailtext: string, subject: string, file: string) {
+    static async fillMessage(subject: string, file: string) {
         await test.step('Sending message to mail text', async () => {
-            await this.mailTo().fill(mailtext)
             await this.subjectField().fill(subject)
             await this.frameField().fill(this.frameField().findLocator('body.editable[role="textbox"]'), 'ashtonoyan@mailfence.com')
             await this.fileButton().click();
@@ -30,6 +29,11 @@ export class MessageNewMailForm extends BaseComponent {
 
         });
 
+    }
+
+    static async sendToSelf(mailtext: string): Promise<void> {
+        await this.mailTo().fill(mailtext)
+        await this.sendButton().click();
     }
 
 }

@@ -16,8 +16,8 @@ export default defineConfig({
     fullyParallel: true,
     retries: process.env.CI ? 2 : 0,
     reporter: [
-        ['json', {outputFile: 'test-results/results.json'}],
-        ['html', {open: 'never'}],
+        ['list'],
+        ['./src/core/custom-reporter.ts'],
     ],
     use: {
         headless: false,

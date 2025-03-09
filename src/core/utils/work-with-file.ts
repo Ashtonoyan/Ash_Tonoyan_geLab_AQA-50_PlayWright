@@ -11,7 +11,7 @@ export async function generateFile(): Promise<{ fileName: string, filePath: stri
         await fs.mkdir(directory, {recursive: true});
         console.log(`Directory created: ${directory}`);
     }
-    const fileName = `file_AT_C2256_${faker.string.uuid()}.txt`;
+    const fileName = `file_${faker.string.uuid()}.txt`;
     const filePath = path.join(directory, fileName);
     const fileContent = faker.lorem.sentences(5);
     await fs.writeFile(filePath, fileContent);

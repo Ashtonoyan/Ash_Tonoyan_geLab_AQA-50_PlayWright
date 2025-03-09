@@ -17,17 +17,18 @@ export class MessagesPage extends BasePage {
         })
     }
 
-    static async createAndFillMessage(mailtext: string, subject: string, file: string): Promise<void> {
+    static async createAndFillMessage(subject: string, file: string): Promise<void> {
         await test.step("Create and fill message", async () => {
             await MessagesActionsTopBar.newMail().click()
-            await MessageNewMailForm.fillMessage(mailtext, subject, file)
+            await MessageNewMailForm.fillMessage(subject, file)
         })
 
     }
 
-    static async sendMessageToSelf() {
-        await test.step("Sending message to Me", async () => {
-            await MessageNewMailForm.sendButton().click()
+
+    static async sendMessageToSelf(mailtext: string): Promise<void> {
+        await test.step("Sending message to Self", async () => {
+            await MessageNewMailForm.sendToSelf(mailtext)
         })
     }
 

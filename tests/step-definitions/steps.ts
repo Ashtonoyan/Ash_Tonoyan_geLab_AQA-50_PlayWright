@@ -4,7 +4,7 @@ import {getPage, setPage} from "../../src/core/utils/page-utils";
 import { expect } from '@playwright/test';
 import { createBdd } from 'playwright-bdd';
 import {faker} from "@faker-js/faker";
-import {generateFile} from "../../src/core/utils/work-with-file";
+import {deleteGenerateFile, generateFile} from "../../src/core/utils/work-with-file";
 
 
 const { Given, When, Then } = createBdd();
@@ -23,11 +23,12 @@ When('Navigate to the Messages page', async () => {
 When('Compose new email with file attachment name {string}', async ({}, prefix: string) => {
     subjectRandom = `${prefix}_${faker.string.alphanumeric(10).toUpperCase()}`
     workWithFile = await generateFile()
-    await MessagesPage.createAndFillMessage(process.env.MAIL_TEXT!, subjectRandom, workWithFile["filePath"])
+    await MessagesPage.createAndFillMessage(subjectRandom, workWithFile.filePath)
+    await deleteGenerateFile(workWithFile.filePath)
 })
 
 When('Send email to yourself', async()=>{
-    await MessagesPage.sendMessageToSelf()
+    await MessagesPage.sendMessageToSelf(process.env.MAIL_TO!)
 })
 
 
@@ -49,13 +50,13 @@ When('Navigate to the My Documents page', async () => {
 })
 
 When('Move txt file to Trash by drag and drop', async () => {
-    await DocumentsPage.moveFileToTrash(workWithFile["fileName"])
+    await DocumentsPage.moveFileToTrash(workWithFile.fileName)
 })
 
 
 Then('Verify that txt file is in the Trash', async () => {
     await DocumentsPage.goToTrash()
-    await expect(getPage().locator(`[title="${workWithFile["fileName"]}"]`)).toBeVisible();
+    await expect(getPage().locator(`[title="${workWithFile.fileName}"]`)).toBeVisible();
 })
 
 
